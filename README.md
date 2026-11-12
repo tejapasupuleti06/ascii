@@ -1,4 +1,4 @@
-# FORM/FRAME — Creative Studio Portfolio
+# ASCII Curated design studio
 
 An ultra-premium, bespoke Next.js 15 portfolio for **FORM/FRAME**, an independent dual creative practice uniting:
 * **Teja** — Creative Engineering & Web Architecture (`+91 97011 73777` · `tejapasupuleti06@gmail.com`)
