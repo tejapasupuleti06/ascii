@@ -46,7 +46,7 @@
     },
     royal: {
       name: 'Royal Sapphire',
-      bg: '#031211',
+      bg: '#000000',
       bgGlow: '#002b2e',
       body: '#0096c7',
       bodyEmissive: '#023e8a',

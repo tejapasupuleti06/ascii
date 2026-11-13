@@ -72,7 +72,7 @@ export const BrandMarksHoverExpand: React.FC<BrandMarksHoverExpandProps> = ({
               onHoverStart={() => setActiveImage(index)}
               data-cursor="LOGO"
               style={{
-                backgroundColor: '#E8E4D3',
+                backgroundColor: 'hsl(0, 0%, 90%)',
                 cursor: 'pointer',
               }}
             >

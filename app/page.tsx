@@ -26,7 +26,6 @@ import {
 import ProjectShowreel from '../components/ProjectShowreel';
 import CuratedSilkHero from '../components/CuratedSilkHero';
 import EditorialMenuModal from '../components/EditorialMenuModal';
-import HorizontalScrollGallery from '../components/HorizontalScrollGallery';
 import InteractiveServices from '../components/InteractiveServices';
 import StudioTransitionSection from '../components/StudioTransitionSection';
 import BrandMarksHoverExpand from '../components/BrandMarksHoverExpand';
@@ -481,21 +480,74 @@ export default function Home() {
                   }}
                 />
 
-                {/* ================= 2. SELECTED WORK: VERTICAL-SCROLL-DRIVEN HORIZONTAL SHOWCASE ================= */}
-                <HorizontalScrollGallery
-                  onOpenDeck={(pdfUrl, title) => {
-                    const deckItem = brandDecks.find(d => d.pdf === pdfUrl) || {
-                      id: title.toLowerCase().replace(/\s+/g, '-'),
-                      title,
-                      discipline: 'Brand Identity Case Presentation',
-                      image: '/surprise-cakes-cover.jpg',
-                      pdf: pdfUrl,
-                      description: `Complete brand identity and visual architecture deck for ${title}.`,
-                      deliverables: ['Identity System', 'Brand Guidelines', 'Visual Assets']
-                    };
-                    setActiveDeck(deckItem);
-                  }}
-                />
+                {/* ================= 2. CRAFTED FROM IMAGINATION: ORIGINAL SMOOTH GRID (ZERO LAG) ================= */}
+                <section className="section-block wrap" id="work">
+                  <div className="editorial-section-header">
+                    <div>
+                      <h2 className="maayasthra-heading">Crafted from Imagination</h2>
+                    </div>
+                  </div>
+
+                  <div className="crafted-projects-grid">
+                    {webProjects.map((project, index) => (
+                      <motion.article
+                        key={project.id}
+                        className="crafted-card"
+                        initial={{ opacity: 0, y: 32 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.12 }}
+                        transition={{ duration: 0.55, delay: index * 0.08 }}
+                        onClick={() => {
+                          if (project.liveUrl) {
+                            playSound('click');
+                            window.open(project.liveUrl, '_blank', 'noreferrer');
+                          }
+                        }}
+                      >
+                        <div className="crafted-media-frame">
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="crafted-media-img"
+                            loading="lazy"
+                          />
+                          <div className="crafted-media-overlay" />
+
+                          <div className="crafted-center-highlight">
+                            {project.logoImg ? (
+                              <div className="crafted-brand-lockup">
+                                <img
+                                  src={project.logoImg}
+                                  alt={project.brandName || project.title}
+                                  className="crafted-logo-img"
+                                />
+                              </div>
+                            ) : (
+                              <div className="crafted-brand-lockup">
+                                <div className="crafted-emblem-badge">
+                                  {renderProjectEmblem(project.emblemType)}
+                                </div>
+                                <h4 className="crafted-brand-title">{project.brandName || project.title}</h4>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="crafted-card-header">
+                          <div className="crafted-name-row">
+                            <h3 className="crafted-card-name">{project.title}</h3>
+                            <span className="crafted-card-arrow">
+                              <ArrowUpRight size={18} />
+                            </span>
+                          </div>
+                          <div className="crafted-card-subline">
+                            <span className="crafted-category-text">{project.category}</span>
+                          </div>
+                        </div>
+                      </motion.article>
+                    ))}
+                  </div>
+                </section>
 
                 {/* ================= 3. INTERACTIVE SERVICES: LIST WITH HOVER IMAGE PREVIEW ================= */}
                 <InteractiveServices

@@ -12,7 +12,7 @@ export default function CuratedSpotlightHero({ theme = 'dark' }: CuratedSpotligh
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   // Palette colors based on present studio theme (Electric Teal, Warm Ivory, Ink Black)
-  const accentColor = '#00AEBB';
+  const accentColor = 'hsl(21, 100%, 75%)';
   const lightConeStop = 'rgba(0, 174, 187, 0.35)';
   const lightConeStopFaint = 'rgba(0, 174, 187, 0.12)';
   const lightPoolStop = 'rgba(0, 174, 187, 0.24)';
@@ -164,7 +164,7 @@ export default function CuratedSpotlightHero({ theme = 'dark' }: CuratedSpotligh
             style={{
               stroke: accentColor,
               strokeWidth: 2,
-              filter: 'drop-shadow(0 0 20px rgba(0, 174, 187, 0.95)) drop-shadow(0 0 5px #00AEBB) drop-shadow(0 0 1px #E8E4D3)',
+              filter: 'drop-shadow(0 0 20px hsla(21, 100%, 75%, 0.95)) drop-shadow(0 0 5px hsl(21, 100%, 75%)) drop-shadow(0 0 1px hsl(0, 0%, 90%))',
             }}
           />
         </svg>
@@ -277,7 +277,7 @@ export default function CuratedSpotlightHero({ theme = 'dark' }: CuratedSpotligh
             style={{
               stroke: accentColor,
               strokeWidth: 2,
-              filter: 'drop-shadow(0 0 18px rgba(0, 174, 187, 0.95)) drop-shadow(0 0 5px #00AEBB) drop-shadow(0 0 1px #E8E4D3)',
+              filter: 'drop-shadow(0 0 18px hsla(21, 100%, 75%, 0.95)) drop-shadow(0 0 5px hsl(21, 100%, 75%)) drop-shadow(0 0 1px hsl(0, 0%, 90%))',
             }}
           />
         </svg>
