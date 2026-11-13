@@ -16,6 +16,7 @@ interface PeacockLoaderProps {
   theme?: string;
   activeView?: string;
   onTransitionStart?: () => void;
+  onTransitionComplete?: () => void;
 }
 
 export default function PeacockLoader({
@@ -23,6 +24,7 @@ export default function PeacockLoader({
   theme = 'asciiStudio',
   activeView = 'main',
   onTransitionStart,
+  onTransitionComplete,
 }: PeacockLoaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const loaderInstanceRef = useRef<any>(null);
@@ -40,6 +42,29 @@ export default function PeacockLoader({
       document.body.style.overflow = '';
     };
   }, [phase]);
+
+  // Handle immediate transition trigger on click or animation completion
+  const handleTriggerOpening = () => {
+    if (phase !== 'intro') return;
+
+    if (onTransitionStart) {
+      onTransitionStart();
+    }
+
+    setPhase('dissolving');
+
+    // After circular expansion completes (~1100ms), unmount
+    setTimeout(() => {
+      setPhase('hidden');
+      if (onTransitionComplete) {
+        onTransitionComplete();
+      }
+      if (loaderInstanceRef.current?.destroy) {
+        loaderInstanceRef.current.destroy();
+        loaderInstanceRef.current = null;
+      }
+    }, 1100);
+  };
 
   useEffect(() => {
     let active = true;
@@ -93,32 +118,14 @@ export default function PeacockLoader({
 
         const loader = new window.PeacockLoader({
           container: containerRef.current,
-          theme: theme, // Electric Teal #00AEBB, Warm Ivory #E8E4D3, Ink Black #031211
-          speed: speed, // 0.75x speed
-          scale: responsiveScale, // Responsively scaled: neatly framed on mobile, impactful on desktop
-          loop: false,  // Run feather fan + ASCII letters kick, hold for 1.0s, then trigger onComplete
+          theme: theme, // Pure White Logo on complete black #000000
+          speed: speed,
+          scale: responsiveScale,
+          loop: false,
           interactive: true,
           onComplete: () => {
             if (!active) return;
-
-            // Notify parent that transition has started (revealing main page simultaneously)
-            if (onTransitionStart) {
-              onTransitionStart();
-            }
-
-            // Start dissolving out with complete blur & fade
-            setPhase('dissolving');
-
-            // After 900ms smooth blur-fade, completely unmount and dispose Three.js canvas
-            setTimeout(() => {
-              if (active) {
-                setPhase('hidden');
-                if (loaderInstanceRef.current?.destroy) {
-                  loaderInstanceRef.current.destroy();
-                  loaderInstanceRef.current = null;
-                }
-              }
-            }, 900);
+            handleTriggerOpening();
           },
         });
 
@@ -137,7 +144,7 @@ export default function PeacockLoader({
         loaderInstanceRef.current = null;
       }
     };
-  }, [theme, speed, onTransitionStart]);
+  }, [theme, speed]);
 
   if (phase === 'hidden') {
     return null;
@@ -149,41 +156,40 @@ export default function PeacockLoader({
     <div
       id="peacock-3d-system-wrapper"
       aria-label="ASCII Peacock 3D Emblem"
+      onClick={handleTriggerOpening}
       style={{
         position: 'fixed',
         inset: 0,
         width: '100vw',
         height: '100vh',
         zIndex: 99999,
+        background: '#000000',
+        cursor: isDissolving ? 'default' : 'pointer',
         pointerEvents: isDissolving ? 'none' : 'auto',
         opacity: isDissolving ? 0 : 1,
-        filter: isDissolving ? 'blur(35px)' : 'none',
-        transform: isDissolving ? 'scale(1.08)' : 'scale(1)',
-        transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'opacity 1.05s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
     >
-      {/* Fullscreen Frosted Obsidian Backdrop with Teal Radial Glow */}
-      <div
-        id="peacock-intro-backdrop"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          background: '#031211',
-          opacity: isDissolving ? 0 : 1,
-          transition: 'opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1)',
-          pointerEvents: 'none',
-        }}
-      >
+      {/* Expanding Circular Ring Shockwave Effect originating from the Logo */}
+      {isDissolving && (
         <div
+          className="circular-preloader-ripple"
           style={{
             position: 'absolute',
-            inset: 0,
-            background: 'radial-gradient(circle at 50% 46%, rgba(0, 174, 187, 0.22) 0%, #031211 72%)',
+            top: '50%',
+            left: '50%',
+            width: '20px',
+            height: '20px',
+            transform: 'translate(-50%, -50%)',
+            borderRadius: '50%',
+            border: '2px solid hsl(21, 100%, 75%)',
+            boxShadow: '0 0 60px 20px hsla(21, 100%, 75%, 0.6), inset 0 0 40px hsla(21, 100%, 75%, 0.4)',
+            animation: 'circularIrisExpand 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             pointerEvents: 'none',
+            zIndex: 10,
           }}
         />
-      </div>
+      )}
 
       {/* 3D Canvas Container */}
       <div
@@ -192,6 +198,9 @@ export default function PeacockLoader({
           width: '100%',
           height: '100%',
           zIndex: 1,
+          transform: isDissolving ? 'scale(1.12)' : 'scale(1)',
+          filter: isDissolving ? 'blur(20px)' : 'none',
+          transition: 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s cubic-bezier(0.16, 1, 0.3, 1)',
           pointerEvents: isDissolving ? 'none' : 'auto',
         }}
       >
@@ -207,6 +216,27 @@ export default function PeacockLoader({
           }}
         />
       </div>
+
+      {/* Hint to click */}
+      {!isDissolving && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '24px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            fontFamily: 'var(--font-mono, monospace)',
+            fontSize: '11px',
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'hsl(0, 0%, 55%)',
+            pointerEvents: 'none',
+            opacity: 0.8,
+          }}
+        >
+          Click to enter
+        </div>
+      )}
     </div>
   );
 }

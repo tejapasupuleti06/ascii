@@ -24,7 +24,8 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import ProjectShowreel from '../components/ProjectShowreel';
-import EditorialHero from '../components/EditorialHero';
+import CuratedSilkHero from '../components/CuratedSilkHero';
+import EditorialMenuModal from '../components/EditorialMenuModal';
 import HorizontalScrollGallery from '../components/HorizontalScrollGallery';
 import InteractiveServices from '../components/InteractiveServices';
 import StudioTransitionSection from '../components/StudioTransitionSection';
@@ -217,6 +218,7 @@ export default function Home() {
   const [activeView, setActiveView] = useState<'main' | 'teja' | 'lokesh' | 'gallery'>('main');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [introLoading, setIntroLoading] = useState(true);
+  const [isOpening, setIsOpening] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activePoster, setActivePoster] = useState<number | null>(null);
   const [activeDeck, setActiveDeck] = useState<typeof brandDecks[0] | null>(null);
@@ -386,62 +388,96 @@ export default function Home() {
       {/* Global Tactile Film Grain Overlay */}
       <div className="film-grain-overlay" aria-hidden="true" />
 
-      {/* ================= 1. PEACOCK 3D LOADING & HERO DOCKED EMBLEM ================= */}
-      <PeacockLoader
-        speed={0.75}
-        theme="asciiStudio"
-        activeView={activeView}
-        onTransitionStart={() => setIntroLoading(false)}
-      />
-
-      {/* ================= 2. MAIN APPLICATION WORKSPACE (MOUNTED IN BACKGROUND) ================= */}
-      <div className="view-transition-wrapper">
-        {/* Subtle aperture curtain wipe during view switches */}
-        <motion.div
-          key={`curtain-${activeView}`}
-          className="luxury-view-shutter"
-          initial={{ scaleY: 1 }}
-          animate={{ scaleY: 0 }}
-          exit={{ scaleY: 1 }}
-          transition={{ duration: 0.52, ease: transitionEase }}
-          aria-hidden="true"
+      {/* ================= 1. PEACOCK 3D LOADING & CIRCULAR PRELOADER IRIS ================= */}
+      {introLoading && (
+        <PeacockLoader
+          speed={0.75}
+          theme="asciiStudio"
+          activeView={activeView}
+          onTransitionStart={() => setIsOpening(true)}
+          onTransitionComplete={() => setIntroLoading(false)}
         />
+      )}
 
-        {/* ================= SITE HEADER: BRANDMARK FULL WIDTH ================= */}
-        <header className="site-nav site-nav-minimal">
-          <button
-            type="button"
-            className="studio-brandmark"
-            aria-label="ASCII Studio"
-            onClick={() => selectView('main')}
-            data-cursor="HOME"
-          >
-            ASCII
-          </button>
-        </header>
+      {/* ================= 2. MAIN APPLICATION WORKSPACE WITH CIRCULAR REVEAL ================= */}
+      <div
+        className="circular-page-reveal-wrapper"
+        style={{
+          clipPath: isOpening || !introLoading ? 'circle(160% at 50% 50%)' : 'circle(0% at 50% 50%)',
+        }}
+      >
+        <div className="view-transition-wrapper">
+          {/* Subtle aperture curtain wipe during view switches */}
+          <motion.div
+            key={`curtain-${activeView}`}
+            className="luxury-view-shutter"
+            initial={{ scaleY: 1 }}
+            animate={{ scaleY: 0 }}
+            exit={{ scaleY: 1 }}
+            transition={{ duration: 0.52, ease: transitionEase }}
+            aria-hidden="true"
+          />
 
-        {/* ================= SMOOTH VIEW TRANSITION CONTAINER ================= */}
-        <AnimatePresence mode="wait">
-          {activeView === 'main' && (
-            /* ================= MAIN PAGE: CURATED DESIGN STUDIO + ALL BLOCKS ================= */
-            <motion.div
-              key="main-view"
-              className="studio-canvas"
-              data-theme={theme}
-              initial={{ opacity: 1, scale: 1, filter: 'none', y: 0 }}
-              animate={{ opacity: 1, scale: 1, filter: 'none', y: 0 }}
-              exit={{ opacity: 0, scale: 1.015, filter: 'blur(10px)', y: -20 }}
-              transition={{ duration: 0.55, ease: transitionEase }}
-            >
-                {/* ================= 1. HERO SECTION: EDITORIAL ROTATING TYPOGRAPHY ================= */}
-                <EditorialHero
-                  onScrollToWork={() => {
-                    const el = document.getElementById('work');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+          {/* ================= SITE HEADER: BRANDMARK & MENU FOR SUB-VIEWS ================= */}
+          {activeView !== 'main' && (
+            <header className="site-nav site-nav-minimal">
+              <button
+                type="button"
+                className="studio-brandmark"
+                aria-label="asciitech"
+                onClick={() => selectView('main')}
+                data-cursor="HOME"
+              >
+                <span>asciitech</span>
+                <span style={{ color: 'hsl(21, 100%, 75%)' }}>↗</span>
+              </button>
+              <button
+                type="button"
+                className="curated-menu-toggle-btn"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open Navigation Menu"
+              >
+                <span className="menu-bar menu-bar-top" />
+                <span className="menu-bar menu-bar-bottom" />
+              </button>
+            </header>
+          )}
+
+          {/* ================= SMOOTH VIEW TRANSITION CONTAINER ================= */}
+          <AnimatePresence mode="wait">
+            {activeView === 'main' && (
+              /* ================= MAIN PAGE: CURATED DESIGN STUDIO + ALL BLOCKS ================= */
+              <motion.div
+                key="main-view"
+                className="studio-canvas"
+                data-theme={theme}
+                initial={{ opacity: 1, scale: 1, filter: 'none', y: 0 }}
+                animate={{ opacity: 1, scale: 1, filter: 'none', y: 0 }}
+                exit={{ opacity: 0, scale: 1.015, filter: 'blur(10px)', y: -20 }}
+                transition={{ duration: 0.55, ease: transitionEase }}
+              >
+                {/* ================= 1. HERO SECTION: CURATED DESIGN STUDIO ON AMBER SILK ================= */}
+                <CuratedSilkHero
+                  onOpenMenu={() => setMenuOpen(true)}
+                  onScheduleCall={() => {
+                    playSound('chime');
+                    window.open(getWhatsAppUrl(), '_blank', 'noreferrer');
                   }}
-                  onScrollToContact={() => {
-                    const el = document.getElementById('contact');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  onSelectFeature={(featureTitle) => {
+                    playSound('click');
+                    if (featureTitle.toLowerCase().includes('brand')) {
+                      const el = document.getElementById('brand-marks');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    } else if (featureTitle.toLowerCase().includes('web')) {
+                      const el = document.getElementById('work');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    } else if (featureTitle.toLowerCase().includes('corporate')) {
+                      const el = document.getElementById('services');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      const el = document.getElementById('studio');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }
                   }}
                 />
 
@@ -1364,6 +1400,7 @@ export default function Home() {
             )}
           </AnimatePresence>
         </div>
+      </div>
 
       {/* ================= POSTER LIGHTBOX MODAL ================= */}
       <AnimatePresence>
@@ -1591,6 +1628,20 @@ export default function Home() {
           </button>
         </nav>
       )}
+
+      {/* ================= EDITORIAL MENU MODAL ================= */}
+      <EditorialMenuModal
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onNavigate={(sectionId, view) => {
+          if (view && view !== activeView) {
+            selectView(view, sectionId);
+          } else {
+            const el = document.getElementById(sectionId);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}
+      />
     </>
   );
 }

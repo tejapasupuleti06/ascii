@@ -23,26 +23,26 @@
   // Color Themes
   const THEMES = {
     asciiStudio: {
-      name: 'ASCII Studio Brand Palette',
-      bg: '#031211',
-      bgGlow: '#002b2e',
-      body: '#00AEBB',
-      bodyEmissive: '#00363a',
-      bodyRoughness: 0.16,
-      bodyMetalness: 0.55,
+      name: 'ASCII Studio Pure White & Obsidian Black',
+      bg: '#000000',
+      bgGlow: '#000000',
+      body: '#ffffff',
+      bodyEmissive: '#222222',
+      bodyRoughness: 0.15,
+      bodyMetalness: 0.35,
       feathers: [
-        '#00AEBB', '#1fc7d4', '#4de0eb', '#a8f3f8',
-        '#E8E4D3', '#f2efe4', '#E8E4D3', '#f2efe4',
-        '#a8f3f8', '#4de0eb', '#1fc7d4', '#00AEBB',
-        '#007a82'
+        '#ffffff', '#f5f5f5', '#eeeeee', '#ffffff',
+        '#f8f8f8', '#ffffff', '#eeeeee', '#ffffff',
+        '#f5f5f5', '#ffffff', '#eeeeee', '#f8f8f8',
+        '#ffffff'
       ],
       letters: {
-        A: '#E8E4D3',
-        s: '#00AEBB',
-        c: '#E8E4D3'
+        A: '#ffffff',
+        s: '#ffffff',
+        c: '#ffffff'
       },
-      particleColor: '#00AEBB',
-      accentColor: '#00AEBB'
+      particleColor: '#ffffff',
+      accentColor: '#ffffff'
     },
     royal: {
       name: 'Royal Sapphire',
